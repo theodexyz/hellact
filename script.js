@@ -18,23 +18,26 @@ function update(timestamp) {
         startTime = timestamp;
         song.play();
         startBtn.style.display = 'none';
-        textElement.innerText = sequence[0].text;
+        console.log("Started");
     }
     
     const elapsed = (timestamp - startTime) / 1000;
     
     const zoomBeat = elapsed * (BPM_ZOOM / 60);
-    const zoomPulse = Math.abs(Math.sin(zoomBeat * Math.PI));
-    document.body.style.transform = `scale(${1 + (zoomPulse * 0.05)})`;
+    document.body.style.transform = `scale(${1 + (Math.abs(Math.sin(zoomBeat * Math.PI)) * 0.05)})`;
 
     const textBeat = elapsed * (BPM_TEXT / 60);
-    for (let i = sequence.length - 1; i >= 0; i--) {
+    
+    let currentText = sequence[0].text;
+    for (let i = 0; i < sequence.length; i++) {
         if (textBeat >= sequence[i].beat) {
-            if (textElement.innerText !== sequence[i].text) {
-                textElement.innerText = sequence[i].text;
-            }
-            break;
+            currentText = sequence[i].text;
         }
+    }
+    
+    if (textElement.innerText !== currentText) {
+        textElement.innerText = currentText;
+        console.log("Updated text to: " + currentText);
     }
 
     requestAnimationFrame(update);
