@@ -18,6 +18,7 @@ function update(timestamp) {
         startTime = timestamp;
         song.play();
         startBtn.style.display = 'none';
+        textElement.innerText = sequence[0].text;
     }
     
     const elapsed = (timestamp - startTime) / 1000;
@@ -29,7 +30,9 @@ function update(timestamp) {
     const textBeat = elapsed * (BPM_TEXT / 60);
     for (let i = sequence.length - 1; i >= 0; i--) {
         if (textBeat >= sequence[i].beat) {
-            textElement.innerText = sequence[i].text;
+            if (textElement.innerText !== sequence[i].text) {
+                textElement.innerText = sequence[i].text;
+            }
             break;
         }
     }
