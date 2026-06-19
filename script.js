@@ -1,8 +1,9 @@
 const textElement = document.getElementById('text');
 const startBtn = document.getElementById('startBtn');
 const song = new Audio('song.mp3');
-const BPM = 133;
-const beatInterval = 60 / BPM;
+
+const BPM_ZOOM = 133;
+const BPM_TEXT = 66.5;
 
 const sequence = [
     { beat: 0, text: "Are you ready?" },
@@ -20,21 +21,17 @@ function update(timestamp) {
     }
     
     const elapsed = (timestamp - startTime) / 1000;
-    const currentBeat = elapsed / beatInterval;
+    
+    const zoomBeat = elapsed * (BPM_ZOOM / 60);
+    const zoomPulse = Math.abs(Math.sin(zoomBeat * Math.PI));
+    document.body.style.transform = `scale(${1 + (zoomPulse * 0.05)})`;
 
+    const textBeat = elapsed * (BPM_TEXT / 60);
     for (let i = sequence.length - 1; i >= 0; i--) {
-        if (currentBeat >= sequence[i].beat) {
+        if (textBeat >= sequence[i].beat) {
             textElement.innerText = sequence[i].text;
             break;
         }
-    }
-
-    if (elapsed <= 3.0) {
-        const pulse = Math.sin(elapsed * (Math.PI / beatInterval));
-        const scale = 1 + (Math.abs(pulse) * 0.1);
-        document.body.style.transform = `scale(${scale})`;
-    } else {
-        document.body.style.transform = `scale(1)`;
     }
 
     requestAnimationFrame(update);
